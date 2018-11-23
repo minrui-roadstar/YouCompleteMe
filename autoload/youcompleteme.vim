@@ -582,7 +582,14 @@ endfunction
 
 
 function! s:PollFileParseResponse( ... )
-  if !s:Pyeval( "ycm_state.FileParseRequestReady()" )
+  let s:poll_res = s:Pyeval( "ycm_state.FileParseRequestReady()" )
+  if s:poll_res == 0 " data not ready, we should retry
+    let s:pollers.file_parse_response.id = timer_start(
+          \ s:pollers.file_parse_response.wait_milliseconds,
+          \ function( 's:PollFileParseResponse' ) )
+    return
+  elseif s:poll_res == 1 " data ready, but there is more
+    exec s:python_command "ycm_state.HandleFileParseRequest()"
     let s:pollers.file_parse_response.id = timer_start(
           \ s:pollers.file_parse_response.wait_milliseconds,
           \ function( 's:PollFileParseResponse' ) )
@@ -590,6 +597,7 @@ function! s:PollFileParseResponse( ... )
   endif
 
   exec s:python_command "ycm_state.HandleFileParseRequest()"
+
   if s:Pyeval( "ycm_state.ShouldResendFileParseRequest()" )
     call s:OnFileReadyToParse( 1 )
   endif

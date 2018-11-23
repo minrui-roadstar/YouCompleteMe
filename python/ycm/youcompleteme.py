@@ -457,13 +457,7 @@ class YouCompleteMe( object ):
     self._AddSyntaxDataIfNeeded( extra_data )
     self._AddExtraConfDataIfNeeded( extra_data )
 
-    if self.CurrentBuffer().IsResponseHandled():
-      # only send request when response is handled
-      self.CurrentBuffer().SendParseRequest( extra_data )
-    else:
-      # if response is not handled yet, try to handle it.
-      # whether response is ready is also checked.
-      self.HandleFileParseRequest()
+    self.CurrentBuffer().SendParseRequest( extra_data )
 
   def RefreshWindowSemanticHighlight(self):
       self.CurrentBuffer().RefreshHighlights()
@@ -547,8 +541,13 @@ class YouCompleteMe( object ):
 
   def FileParseRequestReady( self ):
     # Return True if server is not ready yet, to stop repeating check timer.
-    return ( not self.IsServerReady() or
-             self.CurrentBuffer().FileParseRequestReady() )
+    # 0: not ready
+    # 1: data ready, and more data to be checked
+    # 2: data ready, and no more data to be checked
+    if not self.IsServerReady():
+        return 2
+    else:
+        return self.CurrentBuffer().FileParseRequestReady()
 
 
   def HandleFileParseRequest( self, block = False ):
@@ -588,6 +587,8 @@ class YouCompleteMe( object ):
       # it is our responsibility to ensure that we only apply the
       # warning/error/prompt received once (for each event).
       current_buffer.MarkResponseHandled()
+
+      current_buffer.TrySendBufRequest()
 
 
   def ShouldResendFileParseRequest( self ):

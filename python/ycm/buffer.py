@@ -46,23 +46,50 @@ class Buffer( object ):
     self._parse_tick = 0
     self._handled_tick = 0
     self._parse_request = None
+    self._parse_request_buf = None
     self._async_diags = async_diags
     self._diag_interface = DiagnosticInterface( bufnr, user_options )
     self._hl_interface = HighlightInterface(bufnr, user_options )
 
   def FileParseRequestReady( self, block = False ):
+    if not self._parse_request:
+      return 0
+    elif block:
+      return 1
+    elif self._parse_request.Done():
+      if self._parse_request_buf:
+        return 1
+      else:
+        return 2
+
     return bool( self._parse_request and
                  ( block or self._parse_request.Done() ) )
 
 
   def SendParseRequest( self, extra_data ):
-    self._parse_request = EventNotification( 'FileReadyToParse',
-                                             extra_data = extra_data )
-    self._parse_request.Start()
-    # Decrement handled tick to ensure correct handling when we are forcing
-    # reparse on buffer visit and changed tick remains the same.
-    self._handled_tick -= 1
-    self._parse_tick = self._ChangedTick()
+    if self._parse_request==None:
+      self._parse_request = EventNotification( 'FileReadyToParse',
+                                               extra_data = extra_data )
+      self._parse_request.Start()
+      #print("send request")
+      # Decrement handled tick to ensure correct handling when we are forcing
+      # reparse on buffer visit and changed tick remains the same.
+      self._handled_tick -= 1
+      self._parse_tick = self._ChangedTick()
+    else:
+      # buf this request
+      #print("buf request")
+      self._parse_request_buf = EventNotification('FileReadyToParse',
+                                               extra_data = extra_data)
+
+  def TrySendBufRequest(self):
+    if self._parse_request_buf:
+      self._parse_request = self._parse_request_buf
+      self._parse_request_buf = None
+      self._parse_request.Start()
+      print("send buf request")
+      self._handled_tick -= 1
+      self._parse_tick = self._ChangedTick()
 
 
   def NeedsReparse( self ):
@@ -135,6 +162,7 @@ class Buffer( object ):
 
 
   def MarkResponseHandled( self ):
+    self._parse_request = None
     self._handled_tick = self._parse_tick
 
 
