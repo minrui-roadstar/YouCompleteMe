@@ -459,6 +459,14 @@ class YouCompleteMe( object ):
 
     self.CurrentBuffer().SendParseRequest( extra_data )
 
+  def RefreshWindowSemanticHighlight(self):
+      self.CurrentBuffer().RefreshHighlights()
+
+  def ClearWindowSemanticHighlight(self):
+      self.CurrentBuffer().ClearCurrentWindowSemanticHighlight()
+
+  def MoveHighlight(self, start, end):
+    self.CurrentBuffer().MoveHighlight(start, end)
 
   def OnBufferUnload( self, deleted_buffer_number ):
     SendEventNotificationAsync( 'BufferUnload', deleted_buffer_number )
@@ -553,7 +561,9 @@ class YouCompleteMe( object ):
         # Forcefuly update the location list, etc. from the parse request when
         # doing something like :YcmDiags
         current_buffer.UpdateDiagnostics( block is True )
-      else:
+
+      current_buffer.UpdateHighlights()
+      #else:
         # YCM client has a hard-coded list of filetypes which are known
         # to support diagnostics, self.DiagnosticUiSupportedForCurrentFiletype()
         #
@@ -561,7 +571,7 @@ class YouCompleteMe( object ):
         # the _latest_file_parse_request for any exception or UnknownExtraConf
         # response, to allow the server to raise configuration warnings, etc.
         # to the user. We ignore any other supplied data.
-        current_buffer.GetResponse()
+        #current_buffer.GetResponse()
 
       # We set the file parse request as handled because we want to prevent
       # repeated issuing of the same warnings/errors/prompts. Setting this

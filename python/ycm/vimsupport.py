@@ -98,6 +98,9 @@ def CurrentColumn():
 def CurrentLineContents():
   return ToUnicode( vim.current.line )
 
+def GetLineRange(bufnr):
+  return [GetIntValue('line("w0")'), GetIntValue('line("w$")')]
+
 
 def CurrentLineContentsAndCodepointColumn():
   """Returns the line contents as a unicode string and the 0-based current
@@ -1263,6 +1266,8 @@ def SwitchWindow( window ):
   window."""
   vim.current.window = window
 
+def GetCurrentWindow():
+  return vim.current.window
 
 # Expects version_string in 'MAJOR.MINOR.PATCH' format, e.g. '8.1.278'
 def VimVersionAtLeast( version_string ):
@@ -1275,3 +1280,13 @@ def VimVersionAtLeast( version_string ):
     return actual_major_and_minor > matching_major_and_minor
 
   return GetBoolValue( "has( 'patch{0}' )".format( patch ) )
+
+def AddHighlightMatch(bufnr, tp, line, col, size):
+  vim.command('call youcompleteme#AddHighlightMatch('+ '\"' + bufnr + '\"' +','
+                                                     + '\"' + tp    + '\"' +','
+                                                     +        str(line)    +','
+                                                     +        str(col)     +','
+                                                     +        str(size)    +')')
+
+def ClearHighlightMatch(bufnr):
+  vim.command('call youcompleteme#ClearHighlightMatch('+'\"'+bufnr+'\"'+')')

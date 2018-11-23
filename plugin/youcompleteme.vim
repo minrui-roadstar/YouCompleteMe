@@ -71,6 +71,7 @@ elseif &encoding !~? 'utf-\?8'
 endif
 
 let g:loaded_youcompleteme = 1
+let $VIMHOME = expand('<sfile>:p:h:h')
 
 " NOTE: Most defaults are in third_party/ycmd/ycmd/default_settings.json. They
 " are loaded into Vim globals with the 'ycm_' prefix if such a key does not

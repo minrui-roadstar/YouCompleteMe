@@ -135,10 +135,14 @@ function! youcompleteme#Enable()
     autocmd BufEnter * call s:OnBufferEnter()
     autocmd BufUnload * call s:OnBufferUnload()
     autocmd InsertLeave * call s:OnInsertLeave()
+    autocmd InsertEnter * call s:OnFileReadyToParse()
     autocmd VimLeave * call s:OnVimLeave()
     autocmd CompleteDone * call s:OnCompleteDone()
     autocmd BufEnter,WinEnter * call s:UpdateMatches()
   augroup END
+
+
+  call s:SetupSemanticHighlight()
 
   " The FileType event is not triggered for the first loaded file. We wait until
   " the server is ready to manually run the s:OnFileTypeSet function.
@@ -961,6 +965,111 @@ endfunction
 
 function! s:ForceCompileAndDiagnostics()
   exec s:python_command "ycm_state.ForceCompileAndDiagnostics()"
+endfunction
+
+
+" highlight for c/c++
+function! s:SetupSemanticHighlight()
+  " set global for semantic highlight
+  source $VIMHOME/after/syntax/color_coded.vim
+  let g:color_coded_matches = {}
+  let g:color_coded_unique_window_id = 0
+
+  call SetupSemanticHighlightAutocmd()
+  call SetupSemanticHighlightKeymap()
+endfunction
+
+function! youcompleteme#AddHighlightMatch(bufnr, type, line, col, len)
+  call add(g:color_coded_matches[a:bufnr], matchaddpos(a:type, [[ a:line, a:col, a:len ]], -1))
+endfunction!
+
+function! youcompleteme#ClearHighlightMatch(bufnr)
+  try
+    if has_key(g:color_coded_matches, a:bufnr) == 1
+      for id in g:color_coded_matches[a:bufnr]
+        call matchdelete(id)
+      endfor
+    endif
+  catch
+    echomsg "color_coded caught: " . v:exception
+  finally
+    let g:color_coded_matches[a:bufnr] = []
+  endtry
+endfunction!
+
+function! youcompleteme#MoveHighlight()
+  exec s:python_command "ycm_state.MoveHighlight(".line("w0").",".line("w$")")"
+endfunction
+
+function! youcompleteme#DestroyHighlight()
+endfunction
+
+function! SetupSemanticHighlightAutocmd()
+ augroup semantic_highligh
+    autocmd!
+    " we originally care four events:
+    " e1. new window open
+    " e2. old window close
+    " e3. window load  buffer
+    " e4. window unload buffer
+    " however, vim do not have events directly related to these event.
+    " so we use events which will happen when the above 4 events happen
+    autocmd WinEnter    * call RefreshOrCreateWindowSemanticHighlight()
+    autocmd BufEnter    * call RefreshOrCreateWindowSemanticHighlight()
+
+    autocmd CursorMoved,CursorMovedI * call youcompleteme#MoveHighlight()
+    autocmd CursorHold,CursorHoldI   * call youcompleteme#MoveHighlight()
+  augroup END
+endfunction
+
+function! RefreshOrCreateWindowSemanticHighlight()
+    if !exists('w:unique_id')
+        " this window is newly created, so assign an unique id to it
+        let w:unique_id = g:color_coded_unique_window_id
+        let g:color_coded_unique_window_id += 1
+    endif
+
+    " windows can be reused, clear the existing matches
+    " this value will be set again in highlight interface
+    if exists('w:color_code_name')
+        call youcompleteme#ClearHighlightMatch(w:color_code_name)
+        unlet w:color_code_name
+    endif
+
+    exec s:python_command "ycm_state.RefreshWindowSemanticHighlight()"
+endfunction
+
+function! ClearWindowSemanticHighlight()
+    exec s:python_command "ycm_state.ClearWindowSemanticHighlight()"
+endfunction
+
+function! SetupSemanticHighlightKeymap()
+  nnoremap <silent> <ScrollWheelUp>
+        \ <ScrollWheelUp>:call youcompleteme#MoveHighlight()<CR>
+  inoremap <silent> <ScrollWheelUp>
+        \ <ScrollWheelUp><ESC>:call youcompleteme#MoveHighlight()<CR><INS>
+  nnoremap <silent> <ScrollWheelDown>
+        \ <ScrollWheelDown>:call youcompleteme#MoveHighlight()<CR>
+  inoremap <silent> <ScrollWheelDown>
+        \ <ScrollWheelDown><ESC>:call youcompleteme#Highlight()<CR><INS>
+  
+  nnoremap <silent> <S-ScrollWheelUp>
+        \ <S-ScrollWheelUp>:call youcompleteme#MoveHighlight()<CR>
+  inoremap <silent> <S-ScrollWheelUp>
+        \ <S-ScrollWheelUp><ESC>:call youcompleteme#MoveHighlight()<CR><INS>
+  nnoremap <silent> <S-ScrollWheelDown>
+        \ <S-ScrollWheelDown>:call youcompleteme#MoveHighlight()<CR>
+  inoremap <silent> <S-ScrollWheelDown>
+        \ <S-ScrollWheelDown><ESC>:call youcompleteme#MoveHighlight()<CR><INS>
+  
+  nnoremap <silent> <C-ScrollWheelUp>
+        \ <C-ScrollWheelUp>:call youcompleteme#MoveHighlight()<CR>
+  inoremap <silent> <C-ScrollWheelUp>
+        \ <C-ScrollWheelUp><ESC>:call youcompleteme#MoveHighlight()<CR><INS>
+  nnoremap <silent> <C-ScrollWheelDown>
+        \ <C-ScrollWheelDown>:call youcompleteme#MoveHighlight()<CR>
+  inoremap <silent> <C-ScrollWheelDown>
+        \ <C-ScrollWheelDown><ESC>:call youcompleteme#MoveHighlight()<CR><INS>
 endfunction
 
 
