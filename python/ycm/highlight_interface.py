@@ -37,7 +37,6 @@ class HighlightInterface( object ):
     self._line_ends   = {}
 
   def UpdateWithNewHighlights( self, highlights):
-    #return
     #print("update buffer: "+str(self._bufnr)+", hl_num: "+str(len(highlights)))
     self._highlights = highlights
 
