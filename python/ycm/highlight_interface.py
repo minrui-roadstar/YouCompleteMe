@@ -37,6 +37,7 @@ class HighlightInterface( object ):
     self._line_ends   = {}
 
   def UpdateWithNewHighlights( self, highlights):
+    #return
     #print("update buffer: "+str(self._bufnr)+", hl_num: "+str(len(highlights)))
     self._highlights = highlights
 
@@ -60,6 +61,7 @@ class HighlightInterface( object ):
 
         # clear the old highlight
         vimsupport.ClearHighlightMatch(bufname);
+        
 
         # apply new ones
         for highlight in highlights:

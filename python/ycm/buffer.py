@@ -87,7 +87,7 @@ class Buffer( object ):
       self._parse_request = self._parse_request_buf
       self._parse_request_buf = None
       self._parse_request.Start()
-      print("send buf request")
+      #print("send buf request")
       self._handled_tick -= 1
       self._parse_tick = self._ChangedTick()
 
