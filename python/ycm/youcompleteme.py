@@ -457,7 +457,13 @@ class YouCompleteMe( object ):
     self._AddSyntaxDataIfNeeded( extra_data )
     self._AddExtraConfDataIfNeeded( extra_data )
 
-    self.CurrentBuffer().SendParseRequest( extra_data )
+    if self.CurrentBuffer().IsResponseHandled():
+      # only send request when response is handled
+      self.CurrentBuffer().SendParseRequest( extra_data )
+    else:
+      # if response is not handled yet, try to handle it.
+      # whether response is ready is also checked.
+      self.HandleFileParseRequest()
 
   def RefreshWindowSemanticHighlight(self):
       self.CurrentBuffer().RefreshHighlights()

@@ -43,7 +43,6 @@ class HighlightInterface( object ):
     with vimsupport.CurrentWindow():
       for window in vimsupport.GetWindowsForBufferNumber( self._bufnr ):
         vimsupport.SwitchWindow( window )
-        self._line_begins[window], self._line_ends[window] = vimsupport.GetLineRange(self._bufnr)
 
         # assign a unique_id for window, this should only be needed for the first window, do to
         # youcompleteme defered initialization
@@ -57,14 +56,16 @@ class HighlightInterface( object ):
         if not window.vars.has_key('color_code_name'):
           vim.command("let w:color_code_name=" +"\""+bufname+"\"")
 
+        self._line_begins[bufname], self._line_ends[bufname] = vimsupport.GetLineRange(self._bufnr)
+
         # clear the old highlight
         vimsupport.ClearHighlightMatch(bufname);
 
         # apply new ones
         for highlight in highlights:
           line = highlight['line']
-          #if line>=self._line_begins[window] and line<=self._line_ends[window]:
-          vimsupport.AddHighlightMatch(bufname, highlight['type'], line, highlight['col'], len(highlight['text']))
+          if line>=self._line_begins[bufname] and line<=self._line_ends[bufname]:
+            vimsupport.AddHighlightMatch(bufname, highlight['type'], line, highlight['col'], len(highlight['text']))
   
   def RefreshHighlights(self):
     # update with old highlights
@@ -91,7 +92,7 @@ class HighlightInterface( object ):
       vim.command("let w:color_code_name=" +"\""+bufname+"\"")
 
     # record the new line range
-    [self._line_begins[window], self._line_ends[window]] = [start, end];
+    [self._line_begins[bufname], self._line_ends[bufname]] = [start, end];
 
     #remove the old ones
     vimsupport.ClearHighlightMatch(bufname);
@@ -100,5 +101,5 @@ class HighlightInterface( object ):
     for highlight in self._highlights:
       line = highlight['line']
       # only apply ones between line_begin and line_end
-      if line >=self._line_begins[window] and line<=self._line_ends[window]:
+      if line >=self._line_begins[bufname] and line<=self._line_ends[bufname]:
         vimsupport.AddHighlightMatch(bufname, highlight['type'], line, highlight['col'], len(highlight['text']))

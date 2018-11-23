@@ -981,6 +981,7 @@ endfunction
 
 function! youcompleteme#AddHighlightMatch(bufnr, type, line, col, len)
   call add(g:color_coded_matches[a:bufnr], matchaddpos(a:type, [[ a:line, a:col, a:len ]], -1))
+  "echom a:type.",".a:line.",".a:col.",".a:len
 endfunction!
 
 function! youcompleteme#ClearHighlightMatch(bufnr)
