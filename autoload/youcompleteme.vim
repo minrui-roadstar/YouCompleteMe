@@ -141,7 +141,6 @@ function! youcompleteme#Enable()
     autocmd BufEnter,WinEnter * call s:UpdateMatches()
   augroup END
 
-
   call s:SetupSemanticHighlight()
 
   " The FileType event is not triggered for the first loaded file. We wait until

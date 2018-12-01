@@ -1,76 +1,104 @@
 " Vim global plugin for semantic highlighting using libclang
 " Maintainer: Jeaye <contact@jeaye.com>
 
-hi default Member ctermfg=Cyan guifg=Cyan
-hi default Variable ctermfg=Grey guifg=Grey
-hi default Namespace ctermfg=Yellow guifg=#BBBB00
-hi default EnumConstant ctermfg=LightGreen guifg=LightGreen
+"hi link ColorCodeType                      Type
+hi ColorCodeType ctermfg=Blue guifg=#164f99
+hi link StructDecl                         ColorCodeType
+hi link UnionDecl                          ColorCodeType
+hi link ClassDecl                          ColorCodeType
+hi link EnumDecl                           ColorCodeType
+hi link TypedefDecl                        ColorCodeType
+hi link TemplateTypeParameter              ColorCodeType
+hi link TemplateTemplateParameter          ColorCodeType
+hi link ClassTemplatePartialSpecialization ColorCodeType
+hi link ClassTemplate                      ColorCodeType
+hi link UsingDirective                     ColorCodeType
+hi link UsingDeclaration                   ColorCodeType
+hi link TypeAliasDecl                      ColorCodeType
+hi link TypeRef                            ColorCodeType
+hi link CXXBaseSpecifier                   ColorCodeType
+hi link TemplateRef                        ColorCodeType
 
-hi link StructDecl Type
-hi link UnionDecl Type
-hi link ClassDecl Type
-hi link EnumDecl Type
-hi link FieldDecl Member
-hi link EnumConstantDecl EnumConstant
-hi link FunctionDecl Function
-hi link VarDecl Variable
-hi link ParmDecl Variable
-hi link ObjCInterfaceDecl Normal
-hi link ObjCCategoryDecl Normal
-hi link ObjCProtocolDecl Normal
-hi link ObjCPropertyDecl Normal
-hi link ObjCIvarDecl Normal
-hi link ObjCInstanceMethodDecl Normal
-hi link ObjCClassMethodDecl Normal
-hi link ObjCImplementationDecl Normal
-hi link ObjCCategoryImplDecl Normal
-hi link TypedefDecl Type
-hi link CXXMethod Function
-hi link Namespace Namespace
-hi link LinkageSpec Normal
-hi link Constructor Function
-hi link Destructor Function
-hi link ConversionFunction Function
-hi link TemplateTypeParameter Type
-hi link NonTypeTemplateParameter Variable
-hi link TemplateTemplateParameter Type
-hi link FunctionTemplate Function
-hi link ClassTemplate Type
-hi link ClassTemplatePartialSpecialization Type
-hi link NamespaceAlias Namespace
-hi link UsingDirective Type
-hi link UsingDeclaration Type
-hi link TypeAliasDecl Type
-hi link ObjCSynthesizeDecl Normal
-hi link ObjCDynamicDecl Normal
-hi link CXXAccessSpecifier Label
-hi link ObjCSuperClassRef Normal
-hi link ObjCProtocolRef Normal
-hi link ObjCClassRef Normal
-hi link TypeRef Type
-hi link CXXBaseSpecifier Type
-hi link TemplateRef Type
-hi link NamespaceRef Namespace
-hi link MemberRef Member
-hi link LabelRef Label
-hi link OverloadedDeclRef Function
-hi link VariableRef Variable
-hi link FirstInvalid Normal
-hi link InvalidFile Error
-hi link NoDeclFound Error
-hi link NotImplemented Normal
-hi link InvalidCode Error
-hi link FirstExpr Normal
-hi link DeclRefExpr Variable
-hi link MemberRefExpr Member
-hi link CallExpr Function
-hi link ObjCMessageExpr Normal
-hi link BlockExpr Normal
-hi link MacroDefinition Macro
-hi link MacroInstantiation Macro
-hi link IntegerLiteral Number
-hi link FloatingLiteral Float
-hi link ImaginaryLiteral Number
-hi link StringLiteral String
-hi link CharacterLiteral Character
-hi link Punctuation Normal
+hi link ColorCodeFunction                  Function
+hi link FunctionDecl                       ColorCodeFunction
+hi link CXXMethod                          ColorCodeFunction
+hi link Constructor                        ColorCodeFunction
+hi link Destructor                         ColorCodeFunction
+hi link ConversionFunction                 ColorCodeFunction
+hi link FunctionTemplate                   ColorCodeFunction
+hi link OverloadedDeclRef                  ColorCodeFunction
+hi link CallExpr                           ColorCodeFunction
+
+hi link ColorCodeNormal                    Normal
+hi link ObjCInterfaceDecl                  ColorCodeNormal
+hi link ObjCCategoryDecl                   ColorCodeNormal
+hi link ObjCProtocolDecl                   ColorCodeNormal
+hi link ObjCPropertyDecl                   ColorCodeNormal
+hi link ObjCIvarDecl                       ColorCodeNormal
+hi link ObjCInstanceMethodDecl             ColorCodeNormal
+hi link ObjCClassMethodDecl                ColorCodeNormal
+hi link ObjCImplementationDecl             ColorCodeNormal
+hi link ObjCCategoryImplDecl               ColorCodeNormal
+hi link LinkageSpec                        ColorCodeNormal
+hi link ObjCSynthesizeDecl                 ColorCodeNormal
+hi link ObjCDynamicDecl                    ColorCodeNormal
+hi link ObjCSuperClassRef                  ColorCodeNormal
+hi link ObjCProtocolRef                    ColorCodeNormal
+hi link ObjCClassRef                       ColorCodeNormal
+hi link FirstInvalid                       ColorCodeNormal
+hi link NotImplemented                     ColorCodeNormal
+hi link FirstExpr                          ColorCodeNormal
+hi link ObjCMessageExpr                    ColorCodeNormal
+hi link BlockExpr                          ColorCodeNormal
+hi link Punctuation                        ColorCodeNormal
+
+hi ColorCodeVariable ctermfg=Grey guifg=Grey
+hi link Variable                           ColorCodeVariable
+hi link VarDecl                            ColorCodeVariable
+hi link ParmDecl                           ColorCodeVariable
+hi link NonTypeTemplateParameter           ColorCodeVariable
+hi link VariableRef                        ColorCodeVariable
+hi link DeclRefExpr                        ColorCodeVariable
+
+hi ColorCodeMember ctermfg=LightBlue guifg=LightBlue
+hi link Member                             ColorCodeMember
+hi link FieldDecl                          ColorCodeMember
+hi link MemberRef                          ColorCodeMember
+hi link MemberRefExpr                      ColorCodeMember
+
+hi ColorCodeEnumConstant ctermfg=Green guifg=Green
+hi link EnumConstant                      ColorCodeEnumConstant
+hi link EnumConstantDecl                  ColorCodeEnumConstant
+
+hi ColorCodeNamespace ctermfg=Yellow guifg=#FF0000
+hi link Namespace                         ColorCodeNamespace
+hi link NamespaceAlias                    ColorCodeNamespace
+hi link NamespaceRef                      ColorCodeNamespace
+
+hi link ColorCodeLabel                    Label
+hi link CXXAccessSpecifier                ColorCodeLabel
+hi link LabelRef                          ColorCodeLabel
+
+hi link ColorCodeError                    Error
+hi link InvalidFile                       ColorCodeError
+hi link NoDeclFound                       ColorCodeError
+hi link InvalidCode                       ColorCodeError
+
+hi link ColorCodeMacro                    Macro
+hi link MacroDefinition                   ColorCodeMacro
+hi link MacroInstantiation                ColorCodeMacro
+
+hi link ColorCodeNumber                   Number
+hi link IntegerLiteral                    ColorCodeNumber
+hi link ImaginaryLiteral                  ColorCodeNumber
+
+hi link ColorCodeFloat                    Float
+hi link FloatingLiteral                   ColorCodeFloat
+
+hi link ColorCodeString                   String
+hi link StringLiteral                     ColorCodeString
+
+hi link ColorCodeCharacter                Character
+hi link CharacterLiteral                  ColorCodeCharacter
+
+
