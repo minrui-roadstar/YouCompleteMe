@@ -1015,22 +1015,15 @@ endfunction
 function! SetupSemanticHighlightAutocmd()
  augroup semantic_highligh
     autocmd!
-    " we originally care four events:
-    " e1. new window open
-    " e2. old window close
-    " e3. window load  buffer
-    " e4. window unload buffer
-    " however, vim do not have events directly related to these event.
-    " so we use events which will happen when the above 4 events happen
-    autocmd WinEnter    * call RefreshOrCreateWindowSemanticHighlight()
-    autocmd BufEnter    * call RefreshOrCreateWindowSemanticHighlight()
+    autocmd WinEnter    * call RefreshWindowSemanticHighlight()
+    autocmd BufEnter    * call RefreshWindowSemanticHighlight()
 
     autocmd CursorMoved,CursorMovedI * call youcompleteme#MoveHighlight()
     autocmd CursorHold,CursorHoldI   * call youcompleteme#MoveHighlight()
   augroup END
 endfunction
 
-function! RefreshOrCreateWindowSemanticHighlight()
+function! RefreshWindowSemanticHighlight()
     if !exists('w:unique_id')
         " this window is newly created, so assign an unique id to it
         let w:unique_id = g:color_coded_unique_window_id
