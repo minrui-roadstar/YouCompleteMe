@@ -92,8 +92,12 @@ class HighlightInterface( object ):
     if not window.vars.has_key('color_code_name'):
       vim.command("let w:color_code_name=" +"\""+bufname+"\"")
 
+    if bufname in self._line_begins and bufname in self._line_ends:
+      if self._line_begins[bufname] <= start and self._line_ends[bufname] >= end:
+        return
+
     # record the new line range
-    [self._line_begins[bufname], self._line_ends[bufname]] = [start, end];
+    [self._line_begins[bufname], self._line_ends[bufname]] = [start-25, end+25];
 
     #remove the old ones
     vimsupport.ClearHighlightMatch(bufname);
